@@ -1,3 +1,5 @@
+package Cadastros;
+
 public class Mecanicos{
     public int id;
     public String nome;

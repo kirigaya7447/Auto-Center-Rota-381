@@ -1,3 +1,5 @@
+package Cadastros;
+
 public class Estoque{
     public int codigo;
     public String descricao;
