@@ -1,9 +1,14 @@
 import java.util.Scanner;
+import Cadastros.Veiculos;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         int opcao = 0;
         Scanner leia = new Scanner(System.in);
+
+        Veiculos[] veiculos = new Veiculos[100];
+        
+        int totalVeiculos = 0;
 
         System.out.println("\\\\\\\\\\Seja bem vindo ao sistema de gestão da/////");
         System.out.println("\\\\\\\\\\AUTO CENTER ROTA 381/////");
@@ -19,13 +24,45 @@ public class Main {
             System.out.println("8 - Faturamento de Peças");
             System.out.println("0 - Sair");
             System.out.print("Opção desejada: ");
-            
+
             opcao = leia.nextInt();
 
-            switch(opcao){
+            switch (opcao) {
                 case 1:
                     break;
                 case 2:
+                    System.out.println("----> Cadastro de Veículo <----");
+
+                    System.out.println("Digite a placa do veículo:");
+                    String placa = leia.next();
+                    leia.nextLine();
+
+                    boolean veiculoExiste = false;
+
+                    for (int i = 0; i < totalVeiculos; i++) {
+
+                        if (veiculos[i].placa.equalsIgnoreCase(placa)) {
+                            veiculoExiste = true;
+                            break;
+                        }
+
+                    }
+
+                    if (veiculoExiste) {
+
+                        System.out.println("ERRO: Veículo já cadastrado!");
+                        break;
+
+                    }
+
+                    System.out.println("Digite o nome do proprietário:");
+                    String nomeDono = leia.nextLine();
+
+                    System.out.println("Digite o modelo do veículo:");
+                    String modelo = leia.nextLine();
+
+                    totalVeiculos = cadastrarVeiculo(placa,nomeDono,modelo,totalVeiculos,veiculos);
+
                     break;
                 case 3:
                     break;
@@ -51,5 +88,27 @@ public class Main {
             }
         } while (opcao != 0);
 
+    }
+
+    // FUNÇÕES DOS CADASTROS
+
+    public static int cadastrarVeiculo(
+            String placa,
+            String nomeDono,
+            String modelo,
+            int totalVeiculos,
+            Veiculos[] veiculos) {
+
+        veiculos[totalVeiculos] = new Veiculos();
+
+        veiculos[totalVeiculos].placa = placa;
+        veiculos[totalVeiculos].nomeDono = nomeDono;
+        veiculos[totalVeiculos].modelo = modelo;
+
+        System.out.println("Cadastro efetuado com sucesso!");
+
+        totalVeiculos++;
+
+        return totalVeiculos;
     }
 }
