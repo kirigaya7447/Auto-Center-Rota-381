@@ -11,7 +11,6 @@ public class Main {
         int opcao = 0;
         Scanner leia = new Scanner(System.in);
 
-<<<<<<< HEAD
         Mecanicos[] mecanicos = new Mecanicos[100];
         Veiculos[] veiculos = new Veiculos[100];
         Estoque[] estoque = new Estoque[100];
@@ -21,11 +20,8 @@ public class Main {
         int qtdVeiculos = 0;
         int qtdEstoque = 0;
         int qtdOS = 0;
-=======
-        Veiculos[] veiculos = new Veiculos[100];
-        
+
         int totalVeiculos = 0;
->>>>>>> ba7d3ecffc4a5572bfc25ac3abe78d4998ac3822
 
         System.out.println("\\\\\\\\\\Seja bem vindo ao sistema de gestão da/////");
         System.out.println("\\\\\\\\\\AUTO CENTER ROTA 381/////");
@@ -95,7 +91,7 @@ public class Main {
                     System.out.println("Digite o modelo do veículo:");
                     String modelo = leia.nextLine();
 
-                    totalVeiculos = cadastrarVeiculo(placa,nomeDono,modelo,totalVeiculos,veiculos);
+                    totalVeiculos = cadastrarVeiculo(placa, nomeDono, modelo, totalVeiculos, veiculos);
 
                     break;
                 case 3:
@@ -165,5 +161,25 @@ public class Main {
         totalVeiculos++;
 
         return totalVeiculos;
+    }
+
+    public static int cadastrarMecanico(
+            int id,
+            String nome,
+            String especialidade,
+            int qtdMecanicos,
+            Mecanicos[] mecanicos) {
+
+        mecanicos[qtdMecanicos] = new Mecanicos();
+
+        mecanicos[qtdMecanicos].id = id;
+        mecanicos[qtdMecanicos].nome = nome;
+        mecanicos[qtdMecanicos].especialidade = especialidade;
+
+        System.out.println("Cadastro efetuado com sucesso!");
+
+        qtdMecanicos++;
+
+        return qtdMecanicos;
     }
 }
