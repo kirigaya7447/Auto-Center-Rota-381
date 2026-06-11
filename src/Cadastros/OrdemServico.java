@@ -6,7 +6,7 @@ public class OrdemServico{
     public int idMecanico;
     public int idPeca;
     public int quantidadePeca;
-    public double valorMaoObra;
+    public double valorServico;
 
 
 }
