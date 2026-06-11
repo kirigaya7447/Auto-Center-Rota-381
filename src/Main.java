@@ -1,9 +1,12 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
-import Cadastros.Veiculos;
 
+import Cadastros.Veiculos;
 import Cadastros.Estoque;
 import Cadastros.Mecanicos;
 import Cadastros.OrdemServico;
+
 import Relatorios.Relatorios;
 
 public class Main {
@@ -23,6 +26,7 @@ public class Main {
 
         System.out.println("\\\\\\\\\\Seja bem vindo ao sistema de gestão da/////");
         System.out.println("\\\\\\\\\\AUTO CENTER ROTA 381/////");
+
         do {
             System.out.println("Selecione a opção do menu desejada:");
             System.out.println("1 - Cadastrar mecânico");
@@ -42,8 +46,21 @@ public class Main {
                 case 1:
                     System.out.print("ID: ");
                     int idMecanico = leia.nextInt();
-
                     leia.nextLine();
+
+                    boolean mecanicoExiste = false;
+
+                    for (int cont = 0; cont < qtdMecanicos; cont++) {
+                        if (idMecanico == mecanicos[cont].id) {
+                            mecanicoExiste = true;
+                            break;
+                        }
+                    }
+
+                    if (mecanicoExiste) {
+                        System.out.println("ERRO: Mecânico já cadastrado!");
+                        break;
+                    }
 
                     System.out.print("Nome: ");
                     String nomeMecanico = leia.nextLine();
@@ -93,8 +110,21 @@ public class Main {
 
                     System.out.print("Código: ");
                     int codigoEstoque = leia.nextInt();
-
                     leia.nextLine();
+
+                    boolean pecaExiste = false;
+
+                    for (int cont = 0; cont < qtdEstoque; cont++) {
+                        if (codigoEstoque == estoque[cont].codigo) {
+                            pecaExiste = true;
+                            break;
+                        }
+                    }
+
+                    if (pecaExiste) {
+                        System.out.println("ERRO: Peça já cadastrada no sistema!");
+                        break;
+                    }
 
                     System.out.print("Descrição: ");
                     String descricaoEstoque = leia.nextLine();
@@ -246,6 +276,10 @@ public class Main {
         mecanicos[qtdMecanicos].especialidade = especialidade;
 
         qtdMecanicos++;
+
+        salvarMecanicoCSV(id, nome, especialidade);
+
+        
         System.out.println("Cadastro do mecânico efetuado com sucesso!");
 
         return qtdMecanicos;
@@ -335,5 +369,16 @@ public class Main {
             System.out.println("Comissão: R$ " + comissao);
             System.out.println("--------------------------------");
         }
+    }
+
+    public static void salvarMecanicoCSV(int id, String nome, String especialidade) {
+    try {
+        FileWriter fw = new FileWriter("Mecanicos.csv", true);
+
+        fw.write(id + ";" + nome + ";" + especialidade + "\n");
+
+        fw.close();
+    } catch (IOException e) {
+        System.out.println("Erro ao salvar mecânico.");
     }
 }
