@@ -5,6 +5,7 @@ import Cadastros.Estoque;
 import Cadastros.Mecanicos;
 import Cadastros.OrdemServico;
 import Cadastros.Veiculos;
+import Relatorios.Relatorios;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -20,8 +21,6 @@ public class Main {
         int qtdVeiculos = 0;
         int qtdEstoque = 0;
         int qtdOS = 0;
-
-        int totalVeiculos = 0;
 
         System.out.println("\\\\\\\\\\Seja bem vindo ao sistema de gestão da/////");
         System.out.println("\\\\\\\\\\AUTO CENTER ROTA 381/////");
@@ -42,23 +41,19 @@ public class Main {
 
             switch (opcao) {
                 case 1:
-                    mecanicos[qtdMecanicos] = new Mecanicos();
-
                     System.out.print("ID: ");
-                    mecanicos[qtdMecanicos].id = leia.nextInt();
+                    int idMecanico = leia.nextInt();
 
                     leia.nextLine();
 
                     System.out.print("Nome: ");
-                    mecanicos[qtdMecanicos].nome = leia.nextLine();
+                    String nomeMecanico = leia.nextLine();
 
                     System.out.print("Especialidade: ");
-                    mecanicos[qtdMecanicos].especialidade = leia.nextLine();
+                    String especialidadeMecanico = leia.nextLine();
 
-                    qtdMecanicos++;
-
-                    System.out.println("Mecânico cadastrado!");
-
+                    qtdMecanicos = cadastrarMecanico(idMecanico, nomeMecanico, especialidadeMecanico, qtdMecanicos,
+                            mecanicos);
                     break;
                 case 2:
                     System.out.println("----> Cadastro de Veículo <----");
@@ -69,7 +64,7 @@ public class Main {
 
                     boolean veiculoExiste = false;
 
-                    for (int i = 0; i < totalVeiculos; i++) {
+                    for (int i = 0; i < qtdVeiculos; i++) {
 
                         if (veiculos[i].placa.equalsIgnoreCase(placa)) {
                             veiculoExiste = true;
@@ -91,39 +86,91 @@ public class Main {
                     System.out.println("Digite o modelo do veículo:");
                     String modelo = leia.nextLine();
 
-                    totalVeiculos = cadastrarVeiculo(placa, nomeDono, modelo, totalVeiculos, veiculos);
+                    qtdVeiculos = cadastrarVeiculo(placa, nomeDono, modelo, qtdVeiculos, veiculos);
 
                     break;
                 case 3:
-
-                    estoque[qtdEstoque] = new Estoque();
+                    System.out.println("----> Cadastro de Peças no Estoque <----");
 
                     System.out.print("Código: ");
-                    estoque[qtdEstoque].codigo = leia.nextInt();
+                    int codigoEstoque = leia.nextInt();
 
                     leia.nextLine();
 
                     System.out.print("Descrição: ");
-                    estoque[qtdEstoque].descricao = leia.nextLine();
+                    String descricaoEstoque = leia.nextLine();
 
                     System.out.print("Quantidade: ");
-                    estoque[qtdEstoque].quantidade = leia.nextInt();
+                    int quantidadeEstoque = leia.nextInt();
 
                     System.out.print("Preço: ");
-                    estoque[qtdEstoque].preco = leia.nextDouble();
+                    double precoEstoque = leia.nextDouble();
 
-                    qtdEstoque++;
-
-                    System.out.println("Peça cadastrada!");
+                    cadastrarEstoque(codigoEstoque, descricaoEstoque, quantidadeEstoque, precoEstoque, qtdEstoque,
+                            estoque);
 
                     break;
                 case 4:
+                    System.out.println("----> Abertura de Ordem de Serviço <----");
+
+                    System.out.println("Digite o código da O.S:");
+                    int idOS = leia.nextInt();
+
+                    System.out.println("Digite a placa do carro:");
+                    String placaCarroOS = leia.nextLine();
+
+                    System.out.println("Digite o código do mecânico responsável pela O.S:");
+                    int idMecanicoOS = leia.nextInt();
+
+                    System.out.println("Digite o código da peça utilizada na manutenção:");
+                    int idEstoqueOS = leia.nextInt();
+
+                    System.out.println("Digite a quantidade de peças utilizadas na manutenção:");
+                    int quantidadePecaOS = leia.nextInt();
+
+                    System.out.println("Digite o o valor da mão de obra da O.S:");
+                    double valorMaoObra = leia.nextDouble();
+
+                    qtdOS = cadastrarOS(idOS, placaCarroOS, idMecanicoOS, idEstoqueOS, quantidadePecaOS, valorMaoObra,
+                            qtdOS, os);
                     break;
                 case 5:
+                    System.out.println("---- ESTOQUE ----");
+                    if (qtdEstoque == 0) {
+                        System.out.println("Nenhuma peça cadastrada.");
+                        return;
+                    } else {
+
+                        for (int i = 0; i < qtdEstoque; i++) {
+                            System.out.println("Peça " + (i + 1));
+
+                            System.out.println("Código: ");
+                            estoque[i].codigo = leia.nextInt();
+
+                            System.out.println("Descrição: ");
+                            estoque[i].descricao = leia.nextLine();
+
+                            System.out.println("Quantidade: " + estoque[i].quantidade);
+                            estoque[i].quantidade = leia.nextInt();
+
+                            System.out.println("Preço: R$ " + estoque[i].preco);
+                            estoque[i].preco = leia.nextDouble();
+
+                            System.out.println("-----------------------");
+
+                            return;
+                        }
+                    }
                     break;
                 case 6:
+                    calcularComissaoEquipe(
+                            mecanicos,
+                            qtdMecanicos,
+                            os,
+                            qtdOS);
                     break;
                 case 7:
+                        Relatorios.inventarioCritico(estoque, qtdEstoque);
                     break;
                 case 8:
                     break;
@@ -147,20 +194,19 @@ public class Main {
             String placa,
             String nomeDono,
             String modelo,
-            int totalVeiculos,
+            int qtdVeiculos,
             Veiculos[] veiculos) {
 
-        veiculos[totalVeiculos] = new Veiculos();
+        veiculos[qtdVeiculos] = new Veiculos();
 
-        veiculos[totalVeiculos].placa = placa;
-        veiculos[totalVeiculos].nomeDono = nomeDono;
-        veiculos[totalVeiculos].modelo = modelo;
+        veiculos[qtdVeiculos].placa = placa;
+        veiculos[qtdVeiculos].nomeDono = nomeDono;
+        veiculos[qtdVeiculos].modelo = modelo;
 
-        System.out.println("Cadastro efetuado com sucesso!");
+        qtdVeiculos++;
+        System.out.println("Cadastro de veículo efetuado com sucesso!");
 
-        totalVeiculos++;
-
-        return totalVeiculos;
+        return qtdVeiculos;
     }
 
     public static int cadastrarMecanico(
@@ -176,10 +222,76 @@ public class Main {
         mecanicos[qtdMecanicos].nome = nome;
         mecanicos[qtdMecanicos].especialidade = especialidade;
 
-        System.out.println("Cadastro efetuado com sucesso!");
-
         qtdMecanicos++;
+        System.out.println("Cadastro do mecânico efetuado com sucesso!");
 
         return qtdMecanicos;
+    }
+
+    public static int cadastrarEstoque(int codigo,
+            String descricao,
+            int quantidade,
+            double preco,
+            int qtdPecas,
+            Estoque[] estoque) {
+        estoque[qtdPecas] = new Estoque();
+
+        estoque[qtdPecas].codigo = codigo;
+        estoque[qtdPecas].descricao = descricao;
+        estoque[qtdPecas].quantidade = quantidade;
+        estoque[qtdPecas].preco = preco;
+
+        qtdPecas++;
+        System.out.println("Cadastro da peça efetuado com sucesso!");
+
+        return qtdPecas;
+    }
+
+    public static int cadastrarOS(int idOS, String placaCarro, int idMecanico, int idPeca, int quantidadePeca,
+            double valorMaoObra, int qtdOS, OrdemServico[] os) {
+
+        os = new OrdemServico[qtdOS];
+        os[qtdOS].id = idOS;
+        os[qtdOS].placaCarro = placaCarro;
+        os[qtdOS].idMecanico = idMecanico;
+        os[qtdOS].idPeca = idPeca;
+        os[qtdOS].quantidadePeca = quantidadePeca;
+        os[qtdOS].valorMaoObra = valorMaoObra;
+
+        qtdOS++;
+        System.out.println("Cadastro da OS realizado com sucesso!");
+        return qtdOS;
+    }
+
+    public static void calcularComissaoEquipe(
+            Mecanicos[] mecanicos,
+            int qtdMecanicos,
+            OrdemServico[] os,
+            int qtdOS) {
+
+        final double TAXA_COMISSAO = 0.10;
+
+        System.out.println("\n===== COMISSÃO DA EQUIPE =====");
+
+        for (int i = 0; i < qtdMecanicos; i++) {
+
+            double totalVendas = 0;
+
+            for (int j = 0; j < qtdOS; j++) {
+
+                if (os[j].idMecanico == mecanicos[i].id) {
+                    totalVendas += os[j].valorServico;
+                }
+
+            }
+
+            double comissao = totalVendas * TAXA_COMISSAO;
+
+            System.out.println("Mecânico: " + mecanicos[i].nome);
+            System.out.println("Especialidade: " + mecanicos[i].especialidade);
+            System.out.println("Total em serviços: R$ " + totalVendas);
+            System.out.println("Comissão: R$ " + comissao);
+            System.out.println("--------------------------------");
+        }
     }
 }
