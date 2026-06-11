@@ -4,7 +4,6 @@ import Cadastros.Veiculos;
 import Cadastros.Estoque;
 import Cadastros.Mecanicos;
 import Cadastros.OrdemServico;
-import Cadastros.Veiculos;
 import Relatorios.Relatorios;
 
 public class Main {
