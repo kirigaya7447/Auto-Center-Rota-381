@@ -1,5 +1,6 @@
 package Relatorios;
 import Cadastros.Estoque;
+import Cadastros.OrdemServico;
 
 public class Relatorios {
 
@@ -26,4 +27,30 @@ public class Relatorios {
             System.out.println("Nenhuma peça com estoque zerado.");
         }
     }
+    public static void faturamentoPecas(
+        OrdemServico[] os,
+        int qtdOS,
+        Estoque[] estoque,
+        int qtdEstoque) {
+
+    double faturamentoTotal = 0;
+
+    for (int i = 0; i < qtdOS; i++) {
+
+        for (int j = 0; j < qtdEstoque; j++) {
+
+            if (os[i].idPeca == estoque[j].codigo) {
+
+                faturamentoTotal +=
+                        os[i].quantidadePeca * estoque[j].preco;
+
+                break;
+            }
+        }
+    }
+
+    System.out.println("===== FATURAMENTO DE PEÇAS =====");
+    System.out.printf("Total faturado com peças: R$ %.2f%n",
+            faturamentoTotal);
+}
 }
