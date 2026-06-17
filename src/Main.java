@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import Cadastros.Veiculos;
 import java.io.FileWriter;
+import java.io.File;
 import java.io.IOException;
 
 import Cadastros.Estoque;
@@ -18,10 +19,10 @@ public class Main {
         Estoque[] estoque = new Estoque[100];
         OrdemServico[] os = new OrdemServico[100];
 
-        int qtdMecanicos = 0;
-        int qtdVeiculos = 0;
-        int qtdEstoque = 0;
-        int qtdOS = 0;
+        int qtdMecanicos = carregarMecanico(mecanicos);
+        int qtdVeiculos = carregarVeiculo(veiculos);
+        int qtdEstoque = carregarEstoque(estoque);
+        int qtdOS = carregarOS(os);
 
         System.out.println("\\\\\\\\\\Seja bem vindo ao sistema de gestão da/////");
         System.out.println("\\\\\\\\\\AUTO CENTER ROTA 381/////");
@@ -349,57 +350,154 @@ public class Main {
         }
 
     }
+
     public static void salvarMecanicoCSV(int id, String nome, String especialidade) {
-    try {
-        FileWriter fw = new FileWriter("src/BancoDeDados/Mecanicos.csv", true);
+        try {
+            FileWriter fw = new FileWriter("src/BancoDeDados/Mecanicos.csv", true);
 
-        fw.write(id + ";" + nome + ";" + especialidade + "\n");
+            fw.write(id + ";" + nome + ";" + especialidade + "\n");
 
-        fw.close();
-    } catch (IOException e) {
-        System.out.println("Erro ao salvar mecânico.");
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar mecânico.");
+        }
     }
-}
+
     public static void salvarVeiculoCSV(String placa, String nomeDono, String modelo) {
-    try {
-        FileWriter fw = new FileWriter("src/BancoDeDados/Veiculos.csv", true);
+        try {
+            FileWriter fw = new FileWriter("src/BancoDeDados/Veiculos.csv", true);
 
-        fw.write(placa + ";" + nomeDono + ";" + modelo + "\n");
+            fw.write(placa + ";" + nomeDono + ";" + modelo + "\n");
 
-        fw.close();
-    } catch (IOException e) {
-        System.out.println("Erro ao salvar veículo.");
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar veículo.");
+        }
+
     }
 
-}
     public static void salvarEstoqueCSV(int codigo, String descricao, int quantidade, double preco) {
-    try {
-        FileWriter fw = new FileWriter("src/BancoDeDados/Estoque.csv", true);
+        try {
+            FileWriter fw = new FileWriter("src/BancoDeDados/Estoque.csv", true);
 
-        fw.write(codigo + ";" + descricao + ";" + quantidade + ";" + preco + "\n");
+            fw.write(codigo + ";" + descricao + ";" + quantidade + ";" + preco + "\n");
 
-        fw.close();
-    } catch (IOException e) {
-        System.out.println("Erro ao salvar estoque.");
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar estoque.");
+        }
+
     }
 
-}
     public static void salvarOSCSV(int idOS, String placaCarro, int idMecanico,
-                               int idPeca, int quantidadePeca, double valorServico) {
-    try {
-        FileWriter fw = new FileWriter("src/BancoDeDados/OrdemServico.csv", true);
+            int idPeca, int quantidadePeca, double valorServico) {
+        try {
+            FileWriter fw = new FileWriter("src/BancoDeDados/OrdemServico.csv", true);
 
-        fw.write(idOS + ";" +
-                 placaCarro + ";" +
-                 idMecanico + ";" +
-                 idPeca + ";" +
-                 quantidadePeca + ";" +
-                 valorServico + "\n");
+            fw.write(idOS + ";" +
+                    placaCarro + ";" +
+                    idMecanico + ";" +
+                    idPeca + ";" +
+                    quantidadePeca + ";" +
+                    valorServico + "\n");
 
-        fw.close();
-    } catch (IOException e) {
-        System.out.println("Erro ao salvar O.S.");
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar O.S.");
+        }
+
     }
 
-}
+    public static int carregarMecanico(Mecanicos[] mecanicos) {
+        int cont = 0;
+
+        try {
+            Scanner lendoArquivo = new Scanner(new File("src/BancoDeDados/Mecanicos.csv"));
+            while (lendoArquivo.hasNextLine() && cont < mecanicos.length) {
+                String linha = lendoArquivo.nextLine();
+                String[] separador = linha.split(";");
+                mecanicos[cont] = new Mecanicos();
+                mecanicos[cont].id = Integer.valueOf(separador[0]);
+                mecanicos[cont].nome = separador[1];
+                mecanicos[cont].especialidade = separador[2];
+                cont++;
+            }
+
+            lendoArquivo.close();
+        } catch (IOException err) {
+            System.err.println("Erro encontrado na leitura do arquivo: " + err);
+        }
+        return cont;
+    }
+
+
+    public static int carregarVeiculo(Veiculos[] veiculos) {
+        int cont = 0;
+
+        try {
+            Scanner lendoArquivo = new Scanner(new File("src/BancoDeDados/Veiculos.csv"));
+            while (lendoArquivo.hasNextLine() && cont < veiculos.length) {
+                String linha = lendoArquivo.nextLine();
+                String[] separador = linha.split(";");
+                veiculos[cont] = new Veiculos();
+                veiculos[cont].placa = separador[0];
+                veiculos[cont].nomeDono = separador[1];
+                veiculos[cont].modelo = separador[2];
+                cont++;
+            }
+
+            lendoArquivo.close();
+        } catch (IOException err) {
+            System.err.println("Erro encontrado na leitura do arquivo: " + err);
+        }
+        return cont;
+    }
+
+    public static int carregarEstoque(Estoque[] estoque) {
+        int cont = 0;
+
+        try {
+            Scanner lendoArquivo = new Scanner(new File("src/BancoDeDados/Estoque.csv"));
+            while (lendoArquivo.hasNextLine() && cont < estoque.length) {
+                String linha = lendoArquivo.nextLine();
+                String[] separador = linha.split(";");
+                estoque[cont] = new Estoque();
+                estoque[cont].codigo = Integer.valueOf(separador[0]);
+                estoque[cont].descricao = separador[1];
+                estoque[cont].quantidade = Integer.getInteger(separador[2]);
+                estoque[cont].preco = Double.parseDouble(separador[3]);
+                cont++;
+            }
+
+            lendoArquivo.close();
+        } catch (IOException err) {
+            System.err.println("Erro encontrado na leitura do arquivo: " + err);
+        }
+        return cont;
+    }
+
+    public static int carregarOS(OrdemServico[] os) {
+        int cont = 0;
+
+        try {
+            Scanner lendoArquivo = new Scanner(new File("src/BancoDeDados/OrdemServico.csv"));
+            while (lendoArquivo.hasNextLine() && cont < os.length) {
+                String linha = lendoArquivo.nextLine();
+                String[] separador = linha.split(";");
+                os[cont] = new OrdemServico();
+                os[cont].id = Integer.valueOf(separador[0]);
+                os[cont].placaCarro = separador[1];
+                os[cont].idMecanico = Integer.getInteger(separador[2]);
+                os[cont].idPeca = Integer.getInteger(separador[3]);
+                os[cont].quantidadePeca = Integer.getInteger(separador[4]);
+                os[cont].valorServico =  Double.parseDouble(separador[5]);
+                cont++;
+            }
+
+            lendoArquivo.close();
+        } catch (IOException err) {
+            System.err.println("Erro encontrado na leitura do arquivo: " + err);
+        }
+        return cont;
+    }
 }
