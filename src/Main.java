@@ -36,6 +36,8 @@ public class Main {
             System.out.println("6 - Comissão da Equipe");
             System.out.println("7 - Inventário Crítico");
             System.out.println("8 - Faturamento de Peças");
+            System.out.println("9 - Peças mais utilizadas pelos mecânicos");
+            System.out.println("10 - Funcionário do Mês");
             System.out.println("0 - Sair");
             System.out.print("Opção desejada: ");
 
@@ -61,8 +63,7 @@ public class Main {
                     System.out.println("----> Cadastro de Veículo <----");
 
                     System.out.println("Digite a placa do veículo:");
-                    String placa = leia.next();
-                    leia.nextLine();
+                    String placa = leia.nextLine();
 
                     boolean veiculoExiste = false;
 
@@ -189,19 +190,10 @@ public class Main {
 
                         for (int i = 0; i < qtdEstoque; i++) {
                             System.out.println("Peça " + (i + 1));
-
-                            System.out.println("Código: ");
-                            estoque[i].codigo = leia.nextInt();
-
-                            System.out.println("Descrição: ");
-                            estoque[i].descricao = leia.nextLine();
-
+                            System.out.println("Código: " + estoque[i].codigo);
+                            System.out.println("Descrição: " + estoque[i].descricao);
                             System.out.println("Quantidade: " + estoque[i].quantidade);
-                            estoque[i].quantidade = leia.nextInt();
-
                             System.out.println("Preço: R$ " + estoque[i].preco);
-                            estoque[i].preco = leia.nextDouble();
-
                             System.out.println("-----------------------");
                         }
                     }
@@ -220,6 +212,13 @@ public class Main {
                 case 8:
                     Relatorios.faturamentoPecas(os, qtdOS, estoque, qtdEstoque);
                     break;
+
+                case 9:
+                    exibirPecasMaisUtilizadas(mecanicos, qtdMecanicos, estoque, qtdEstoque, os, qtdOS);
+                    break;
+                    case 10:
+                        funcionarioDoMes(mecanicos, qtdMecanicos, os, qtdOS);
+                        break;
                 case 0:
                     System.out.println("Obrigado por utilizar nosso sistema!");
                     System.out.println("Salvando dados...");
@@ -430,7 +429,6 @@ public class Main {
         return cont;
     }
 
-
     public static int carregarVeiculo(Veiculos[] veiculos) {
         int cont = 0;
 
@@ -464,7 +462,7 @@ public class Main {
                 estoque[cont] = new Estoque();
                 estoque[cont].codigo = Integer.valueOf(separador[0]);
                 estoque[cont].descricao = separador[1];
-                estoque[cont].quantidade = Integer.getInteger(separador[2]);
+                estoque[cont].quantidade = Integer.parseInt(separador[2]);
                 estoque[cont].preco = Double.parseDouble(separador[3]);
                 cont++;
             }
@@ -487,10 +485,10 @@ public class Main {
                 os[cont] = new OrdemServico();
                 os[cont].id = Integer.valueOf(separador[0]);
                 os[cont].placaCarro = separador[1];
-                os[cont].idMecanico = Integer.getInteger(separador[2]);
-                os[cont].idPeca = Integer.getInteger(separador[3]);
-                os[cont].quantidadePeca = Integer.getInteger(separador[4]);
-                os[cont].valorServico =  Double.parseDouble(separador[5]);
+                os[cont].idMecanico = Integer.parseInt(separador[2]);
+                os[cont].idPeca = Integer.parseInt(separador[3]);
+                os[cont].quantidadePeca = Integer.parseInt(separador[4]);
+                os[cont].valorServico = Double.parseDouble(separador[5]);
                 cont++;
             }
 
@@ -499,5 +497,114 @@ public class Main {
             System.err.println("Erro encontrado na leitura do arquivo: " + err);
         }
         return cont;
+    }
+
+    public static void funcionarioDoMes(
+            Mecanicos[] mecanicos,
+            int qtdMecanicos,
+            OrdemServico[] os,
+            int qtdOS) {
+
+        if (qtdMecanicos == 0) {
+            System.out.println("Nenhum mecânico cadastrado.");
+            return;
+        }
+
+        if (qtdOS == 0) {
+            System.out.println("Nenhuma Ordem de Serviço cadastrada.");
+            return;
+        }
+
+        int indiceMelhor = -1;
+        int maiorQuantidadeOS = 0;
+
+        for (int i = 0; i < qtdMecanicos; i++) {
+
+            int quantidadeOS = 0;
+
+            for (int j = 0; j < qtdOS; j++) {
+
+                if (os[j].idMecanico == mecanicos[i].id) {
+                    quantidadeOS++;
+                }
+
+            }
+
+            if (quantidadeOS > maiorQuantidadeOS) {
+                maiorQuantidadeOS = quantidadeOS;
+                indiceMelhor = i;
+            }
+        }
+
+        if (indiceMelhor == -1) {
+            System.out.println("Nenhum mecânico possui O.S. registrada.");
+            return;
+        }
+
+        System.out.println("\n===== FUNCIONÁRIO DO MÊS =====");
+        System.out.println("ID: " + mecanicos[indiceMelhor].id);
+        System.out.println("Nome: " + mecanicos[indiceMelhor].nome);
+        System.out.println("Especialidade: " + mecanicos[indiceMelhor].especialidade);
+        System.out.println("Ordens de Serviço realizadas: " + maiorQuantidadeOS);
+    }
+
+    public static void exibirPecasMaisUtilizadas(
+            Mecanicos[] mecanicos,
+            int qtdMecanicos,
+            Estoque[] estoque,
+            int qtdEstoque,
+            OrdemServico[] os,
+            int qtdOS) {
+
+        System.out.println("\n===== PEÇAS MAIS UTILIZADAS POR MECÂNICO =====");
+
+        for (int i = 0; i < qtdMecanicos; i++) {
+
+            System.out.println("\nMecânico: " + mecanicos[i].nome);
+
+            int[] usoPecas = new int[qtdEstoque];
+
+            // Soma as peças usadas pelo mecânico
+            for (int j = 0; j < qtdOS; j++) {
+
+                if (os[j].idMecanico == mecanicos[i].id) {
+
+                    for (int k = 0; k < qtdEstoque; k++) {
+
+                        if (estoque[k].codigo == os[j].idPeca) {
+                            usoPecas[k] += os[j].quantidadePeca;
+                            break;
+                        }
+
+                    }
+
+                }
+
+            }
+
+            boolean encontrou = false;
+
+            for (int k = 0; k < qtdEstoque; k++) {
+
+                if (usoPecas[k] > 0) {
+
+                    encontrou = true;
+
+                    System.out.println(
+                            estoque[k].descricao +
+                                    " -> " +
+                                    usoPecas[k] +
+                                    " unidades");
+
+                }
+
+            }
+
+            if (!encontrou) {
+                System.out.println("Nenhuma peça utilizada.");
+            }
+
+            System.out.println("-----------------------------------");
+        }
     }
 }
